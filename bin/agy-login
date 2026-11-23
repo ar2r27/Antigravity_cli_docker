@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+
+echo "=========================================================="
+echo "          Logowanie do Antigravity CLI (OAuth)            "
+echo "=========================================================="
+echo "1. Po uruchomieniu pojawi sie link Google OAuth."
+echo "2. Otworz link w przegladarce i zaloguj sie na konto Google."
+echo "3. Skopiuj wygenerowany kod autoryzacji i wklej go tutaj."
+echo "4. Wybierz preferencje i zatwierdz katalog roboczy."
+echo "=========================================================="
+echo ""
+
+exec agy "$@"

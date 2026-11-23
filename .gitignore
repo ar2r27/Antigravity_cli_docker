@@ -1,0 +1,8 @@
+# Docker runtime and data directories
+config/
+workspace/
+.env
+
+# Logs and temp files
+*.log
+.DS_Store

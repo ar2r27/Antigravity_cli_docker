@@ -1,0 +1,46 @@
+services:
+  antigravity:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: antigravity-cli:latest
+    container_name: antigravity
+    restart: unless-stopped
+    environment:
+      # Identyfikatory uzytkownika i grupy hosta (w OMV uzyj UID uzytkownika i GID grupy users, np. 1000/100)
+      - PUID=1000
+      - PGID=100
+      - TZ=Europe/Warsaw
+
+      # Nazwa instancji widoczna w panelu Remote Control (https://antigravity.google.com)
+      - INSTANCE_NAME=OMV-Antigravity
+
+      # Automatyczne uruchamianie uslugi Remote Control w tle
+      - AUTO_START_REMOTE=true
+
+      # Web Terminal w przegladarce (bardzo przydatny do jednorazowego logowania OAuth bez uzywania SSH)
+      - ENABLE_WEB_TERMINAL=true
+      - WEB_TERMINAL_PORT=7681
+      # Opcjonalne zabezpieczenie Web Terminala haslem:
+      # - WEB_TERMINAL_USER=admin
+      # - WEB_TERMINAL_PASS=TwojeBezpieczneHaslo123
+    volumes:
+      # Katalog konfiguracyjny - przechowuje tokeny Google OAuth oraz ustawienia agy
+      - ./config:/home/antigravity/.gemini
+
+      # Katalog roboczy z projektami i plikami (w OMV podmien na sciezke do udzialu dyskowego, np. /srv/dev-disk-by-uuid-.../projekty)
+      - ./workspace:/workspace
+
+      # Opcjonalnie: dostep do Dockera hosta (jesli agent ma miec mozliwosc zarzadzania kontenerami)
+      # - /var/run/docker.sock:/var/run/docker.sock
+
+      # Opcjonalnie: klucze SSH hosta do operacji Git
+      # - ~/.ssh:/home/antigravity/.ssh:ro
+
+      # Opcjonalnie: konfiguracja Git z hosta
+      # - ~/.gitconfig:/home/antigravity/.gitconfig:ro
+    ports:
+      # Port dla wbudowanego Web Terminala (HTTP) - dostepny w przegladarce pod adresem http://IP_OMV:7681
+      - "7681:7681"
+    # agy wymaga wystarczajacej pamieci wspoldzielonej dla wbudowanych narzedzi
+    shm_size: "1gb"

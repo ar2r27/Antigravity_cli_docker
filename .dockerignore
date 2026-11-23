@@ -1,0 +1,6 @@
+config/
+workspace/
+.env
+*.log
+.git
+.gitignore

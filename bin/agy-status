@@ -1,0 +1,28 @@
+#!/bin/bash
+set -e
+
+echo "=== Informacje o srodowisku Antigravity CLI ==="
+echo "Wersja agy: $(agy --version 2>/dev/null || echo 'Nie zainstalowano')"
+echo "Uzytkownik: $(whoami) (UID=$(id -u), GID=$(id -g))"
+echo "Katalog roboczy: $(pwd)"
+echo ""
+
+CONFIG_FILE="$HOME/.gemini/config/config.json"
+if [ -f "$CONFIG_FILE" ]; then
+    echo "Nazwa instancji (Remote Control hostname):"
+    jq -r '.userSettings.cliRemoteControlHostname // "domyslna"' "$CONFIG_FILE" 2>/dev/null || cat "$CONFIG_FILE"
+else
+    echo "Brak zapisanego pliku konfiguracji config.json"
+fi
+
+echo ""
+echo "Sprawdzanie statusu autoryzacji..."
+if agy remote-control serve 2>&1 | grep -q "not signed in"; then
+    echo "STATUS: [NIEZALOGOWANY] - Wymagana autoryzacja za pomoca 'agy-login'"
+else
+    echo "STATUS: [ZALOGOWANY] - Sesja Google jest aktywna"
+fi
+
+echo ""
+echo "Procesy w kontenerze:"
+ps aux
